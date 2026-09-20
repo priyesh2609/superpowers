@@ -9,7 +9,7 @@ Execute plan by dispatching a fresh implementer subagent per task, a task review
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
 
-**Core principle:** Fresh subagent per task + task review (spec + quality) + broad final review = high quality, fast iteration
+**Core principle:** Fresh subagent per task + task review (spec + quality) + broad final review = high quality, fast feedback
 
 **Narration:** between tool calls, narrate at most one short line — the
 ledger and the tool results carry the record.
@@ -123,10 +123,24 @@ digraph process {
 
 ## Setup
 
+Vocabulary (phase, round, wave, task, step) is fixed:
+`../using-superpowers/references/terminology.md`. Plans group tasks into
+waves; run tasks in plan order, one at a time.
+
 Ensure the work happens in an isolated workspace: use
 superpowers:using-git-worktrees to create one or verify the existing one.
 Never start implementation on a main/master branch without your human
 partner's explicit consent.
+
+**Commit policy.** Read the `Commit policy` line in the plan header.
+`auto` (or absent): implementers commit as the plan's commit steps say.
+`ask`: tell every implementer, in its dispatch, not to commit and to leave
+its changes in the working tree. When it reports DONE, stop and ask your
+human partner to approve committing that task's files with the message the
+plan's commit step gives. Commit only after they approve, then generate the
+review package. Fix rounds follow the same rule: each fix commit waits for
+approval. If they decline, the task stays uncommitted and you report
+BLOCKED, because review packages are cut from commits.
 
 Conversation memory does not survive compaction. In real sessions,
 controllers that lost their place have re-dispatched entire completed task
@@ -444,6 +458,14 @@ parked-with-ruling at the cap.
 
 ## Final Review
 
+**If the plan header has a `Final review` line**, do not use the reviewer
+dispatch below. Follow superpowers:requesting-code-review, section "Final
+Review via /code-review": one background subagent, on the model the line
+names, runs `/code-review <effort> --fix "<instructions>"`. Ledger the
+result as `Final: code-review <effort> (<model>) — <verdict>, <N> fixed,
+<M> open`. Findings it leaves open go through the re-grade and ruling rules
+below. Without the line, use the flow below.
+
 The final whole-branch review gets a package too: run
 `bash scripts/review-package PLAN_FILE MERGE_BASE HEAD` (MERGE_BASE = the commit the
 branch started from, e.g. `git merge-base main HEAD`) and include the
@@ -458,13 +480,13 @@ fixed before merge.
 If the final whole-branch review returns findings, dispatch ONE fix subagent
 with the complete findings list — not one fixer per finding.
 Per-finding fixers each rebuild context and re-run suites; a real
-session's final-review fix wave cost more than all its tasks combined.
-Then run exactly one scoped re-review of the fix wave
+session's final-review fix pass cost more than all its tasks combined.
+Then run exactly one scoped re-review of the fix pass
 (`bash scripts/review-package PLAN_FILE FIX_BASE HEAD` over the fix range,
 [re-review-prompt.md](re-review-prompt.md)).
 Adjudicate any residual findings as in the task loop's breaker: park with
 rulings, or rule on the load-bearing ones and ledger what you decided. Only
-the four classes above stop you here. There is no second fix wave —
+the four classes above stop you here. There is no second fix pass —
 residual load-bearing findings surface to your human partner when
 finishing-a-development-branch presents the options.
 

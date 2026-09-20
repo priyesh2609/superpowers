@@ -107,6 +107,10 @@ digraph process {
 
 ## Setup
 
+Vocabulary (phase, round, wave, task, step) is fixed:
+`../using-superpowers/references/terminology.md`. Plans group tasks into
+waves; run tasks in plan order, one at a time.
+
 Ensure the work happens in an isolated workspace: use
 superpowers:using-git-worktrees to create one or verify the existing one.
 Never start implementation on a main/master branch without your human
@@ -204,6 +208,12 @@ read its output, and compare. Three outcomes:
 Commit as the plan's commit steps say. A task that spans several commits
 is fine; BASE is what the review range is cut from, never `HEAD~1`.
 
+Read the `Commit policy` line in the plan header. Under `ask`, the plan's
+commit steps tell you to stop: ask your human partner to approve the
+commit, and commit only after they say yes. A general "go ahead" on the
+plan is not that approval. If they decline, leave the task uncommitted and
+report BLOCKED; the ledger and review range are cut from commits.
+
 ### 3. The completion contract
 
 Before a task's ledger line, all of the following are true, with evidence
@@ -232,6 +242,14 @@ A failing run records nothing; the task is not complete. When it records,
 mark the todo complete and take the next task.
 
 ## Final Review
+
+**If the plan header has a `Final review` line**, skip the reviewer
+dispatch below. Follow superpowers:requesting-code-review, section "Final
+Review via /code-review": one background subagent, on the model the line
+names, runs `/code-review <effort> --fix "<instructions>"`. Ledger the
+result as `Final: code-review <effort> (<model>) — <verdict>, <N> fixed,
+<M> open`. Findings it leaves open go through the re-grade and ruling rules
+below. Without the line, use the flow below.
 
 Run `../subagent-driven-development/scripts/review-package PLAN_FILE MERGE_BASE HEAD`
 (MERGE_BASE = the commit the branch started from, e.g.

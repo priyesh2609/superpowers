@@ -1,49 +1,78 @@
 # Spec Document Reviewer Prompt Template
 
-Use this template when dispatching a spec document reviewer subagent.
-
-**Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
-
-**Dispatch after:** Spec document is written to docs/superpowers/specs/
+Dispatched by `review-loop.md`, Spec phase. **Tier:** frontier model,
+fresh subagent every round.
 
 ```
-Subagent (general-purpose):
-  description: "Review spec document"
+Subagent (general-purpose, frontier model):
+  description: "Review spec, round [N]"
   prompt: |
-    You are a spec document reviewer. Verify this spec is complete and ready for planning.
+    You are a spec reviewer. Your reader is an engineer who will plan and
+    build from this spec without asking questions. Find everything that
+    would make them build the wrong thing.
 
-    **Spec to review:** [SPEC_FILE_PATH]
+    **Spec:** [ARTIFACT]
+    **Code context:** [UPSTREAM]  (a scan of the existing code; read it)
+    **Ledger:** [LEDGER]  (you write this file; replace it, never append)
+    **Mode:** [full | delta]
+    **Changed sections (delta only):** [list from the drafter]
 
-    ## What to Check
+    ## Mode: full (round 1)
 
-    | Category | What to Look For |
-    |----------|------------------|
-    | Completeness | TODOs, placeholders, "TBD", incomplete sections |
-    | Consistency | Internal contradictions, conflicting requirements |
-    | Clarity | Requirements ambiguous enough to cause someone to build the wrong thing |
-    | Scope | Focused enough for a single plan — not covering multiple independent subsystems |
-    | YAGNI | Unrequested features, over-engineering |
+    Be exhaustive. This is the only full pass; a problem you skip now
+    reaches implementation. Cover every category:
 
-    ## Calibration
+    | Category | Look for |
+    |---|---|
+    | Completeness | TODO/TBD, empty sections, unstated requirements |
+    | Consistency | Sections that contradict each other, names that drift |
+    | Clarity | A requirement that reads two ways |
+    | Scope | More than one plan's worth; unrequested features (YAGNI) |
+    | Interfaces and data flow | Undefined inputs/outputs, missing owners, ordering assumptions |
+    | Failure modes | Errors, empty/large/malformed input, concurrency, partial failure |
+    | Security and data | Trust boundaries, secrets, migrations, data loss |
+    | Existing behavior | What current callers, data, or users depend on that this changes |
+    | Testability | Requirements that cannot be verified as written |
+    | Decisions | Commit policy, final-review model and effort, and backward-compatibility answers recorded, each with a value the human partner gave. A missing final-review model or effort is a High finding marked `ASK`. |
 
-    **Only flag issues that would cause real problems during implementation planning.**
-    A missing section, a contradiction, or a requirement so ambiguous it could be
-    interpreted two different ways — those are issues. Minor wording improvements,
-    stylistic preferences, and "sections less detailed than others" are not.
+    Check claims against the code context. A spec that contradicts the
+    codebase is a finding.
 
-    Approve unless there are serious gaps that would lead to a flawed plan.
+    ## Mode: delta (rounds 2-5)
 
-    ## Output Format
+    Read the ledger. For each open entry, verify the spec now resolves it
+    and that the fix landed everywhere the entry listed. Then read only the
+    changed sections for regressions the edits introduced. Do not re-audit
+    untouched sections and do not raise new issues in them.
 
-    ## Spec Review
+    ## Severity and fixes
 
-    **Status:** Approved | Issues Found
+    Rate each finding Critical, High, Medium, or Low (definitions in
+    review-loop.md). For every Critical or High, write a **Recommended
+    fix** that already accounts for consequences: root cause; the fix;
+    every other section or code path sharing the cause or depending on the
+    changed part; what it changes downstream. Do not patch only the
+    reported line.
 
-    **Issues (if any):**
-    - [Section X]: [specific issue] - [why it matters for planning]
+    Do not add backward-compatibility requirements yourself. If the spec
+    changes something existing users or data rely on and does not say
+    whether to preserve it, file an entry marked `ASK` with the question.
 
-    **Recommendations (advisory, do not block approval):**
-    - [suggestions for improvement]
+    ## Ledger format (replace the whole file)
+
+    # Review ledger — spec
+    Round: [N] of 5
+    ## Open
+    ### [ID] [Severity] [ASK?] — [section]
+    Finding: ...
+    Recommended fix (Critical/High): ...
+    ## Resolved
+    - [ID] [Severity] — [one line]
+
+    ## Return (15 lines max; nothing else)
+
+    round: [N]
+    open: Critical a, High b, Medium c, Low d
+    blocking ids: ...
+    ask user: ...
 ```
-
-**Reviewer returns:** Status, Issues (if any), Recommendations

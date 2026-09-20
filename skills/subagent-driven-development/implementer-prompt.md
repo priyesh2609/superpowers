@@ -35,7 +35,9 @@ Subagent (general-purpose):
     1. Implement exactly what the task specifies
     2. Write tests (following TDD if task says to)
     3. Verify implementation works
-    4. Commit your work
+    4. Commit your work — unless this dispatch says the plan's Commit
+       policy is `ask`. Then do NOT commit: leave your changes in the
+       working tree and say so in your report.
     5. Self-review (see below)
     6. Report back
 

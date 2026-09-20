@@ -29,6 +29,7 @@ fi
 
 awk -v n="$n" '
   /^```/ { infence = !infence }
+  !infence && /^#+[ \t]+Wave[ \t]+[0-9]+/ { intask = 0 }
   !infence && /^#+[ \t]+Task[ \t]+[0-9]+/ {
     intask = ($0 ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)"))
   }

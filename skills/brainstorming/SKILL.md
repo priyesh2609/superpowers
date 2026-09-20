@@ -5,35 +5,82 @@ description: "You MUST use this before any creative work - creating features, bu
 
 # Brainstorming Ideas Into Designs
 
-Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
+Convert an idea into an approved design: gather context, ask questions
+in batches, recommend one approach, and get your human partner's approval.
 
 Start by classifying how much process the request needs, then work
-through your path: understand the context, refine the idea, present a
-design, and get your human partner's approval.
+through your path.
+
+Vocabulary (workflow, phase, round, wave, task, step, batch) is fixed:
+`../using-superpowers/references/terminology.md`. Use those words and no
+others.
+
+Model roles use two tiers, **frontier model** and **mid-tier model**
+(`../using-superpowers/references/model-tiers.md`). Heavy lifting (code
+scans, first drafts) goes to the mid-tier model. The frontier model is
+reserved for structural reasoning and every review.
 
 ## Establish Shared Understanding
 
 The outcome of brainstorming is an understanding your human partner can
 recognize and correct, grounded in what they want to accomplish.
 
-1. **Discover intent.** Use the request and available context to identify
-   the intended outcome, who it is for, and what success looks like. When
-   that information is missing, ask one focused question about purpose or
-   intended use before proposing features or an approach. Knowing the app
-   genre does not tell you why your partner wants it. Gathering missing
-   requirements does not ask them to authorize the task again.
-2. **Write back your understanding.** Summarize the intended outcome,
-   relevant constraints, and success criteria in a short note your partner
-   can assess. Separate what they said from assumptions. Invite correction
-   and incorporate their answer before treating this as the design brief.
-3. **Carry intent into the design.** Preserve the agreed understanding in
-   the selected path's design artifact: the written spec for architectural
-   work, or the in-chat design/probe for bounded work and spikes. Check
-   proposed features and technical choices against that understanding.
+1. **Gather context first.** Read what the request and the repository
+   already answer, so you ask only what they do not.
+2. **Ask in batches.** After context, send a batch: one message holding
+   every independent question. Keep the back-and-forth minimal, and leave
+   no room for an assumption or confusion that could surface later. See
+   "Question batches" below.
+3. **Write back your understanding with your single recommendation.**
+   Summarize the intended outcome, constraints, and success criteria,
+   separating what they said from what they answered. Then state the one
+   approach you recommend and why. Invite correction, and incorporate it
+   before treating this as the design brief.
+4. **Carry intent into the design.** Preserve the agreed understanding in
+   the selected path's design artifact: the written spec for
+   architectural work, or the in-chat design/probe for bounded work and
+   spikes. Check proposed features and technical choices against it.
 
 When the request already supplies the purpose and constraints, reflect
-that understanding instead of asking the same questions again. Keep the
-note concise; its accuracy and the opportunity to correct it matter.
+that understanding instead of asking the same questions again.
+
+## Question batches
+
+Minimize the back-and-forth by asking multiple independent questions in
+each batch, but leave no room for assumptions or confusion that could
+surface later.
+
+- **One batch holds every independent question.** Never ask one question
+  per message when the questions do not depend on each other.
+- **A question that depends on an earlier answer waits for the next
+  batch.** Nothing else waits. Send the next batch as soon as the answers
+  arrive.
+- **Every question carries your recommended default**, so your human
+  partner can reply "defaults are fine" or override individual items.
+- **Stop asking only when no assumption is left.** Before the write-back,
+  list every assumption you would otherwise make. Each one becomes a
+  question in the next batch, or an explicit line in the write-back that
+  your human partner confirms.
+- If the harness has a structured question tool that takes several
+  questions per call, use it; otherwise a numbered list in one message.
+
+The first batch covers, when the request does not already answer it:
+
+- Purpose, who it is for, and what success looks like
+- Constraints: versions, dependencies, deadlines, things not to touch
+- **Backward compatibility** — only when the change affects something
+  existing callers, data, or users depend on. Do not assume it is
+  required; ask.
+- **Commit policy** for execution: `auto` (commit at each task boundary)
+  or `ask` (stop for approval before each commit). The spec and plan
+  record the answer, and the execution skills obey it. This skill and
+  writing-plans never run git themselves.
+- **Final review** — once execution ends, the branch is reviewed through
+  `/code-review`. Ask which **model** and which **effort** level to run it
+  with. Record their exact words; do not pick for them and do not name a
+  default. The spec and plan carry the answer, and the execution skills
+  use it.
+- Anything else the context scan showed is ambiguous or risky
 
 <HARD-GATE>
 Before taking any implementation action, including invoking an
@@ -43,14 +90,15 @@ selected path's prerequisites:
 
 - Spike: the human partner approves the question and probe.
 - Bounded: the human partner approves the short in-chat design.
-- Architectural: the human partner reviews and approves the written spec,
-  then reviews the written implementation plan and selects its execution
-  method. Conversational design approval only permits writing the spec;
-  written-spec approval only permits invoking writing-plans.
+- Architectural: the human partner approves the recommendation, then
+  reviews and approves the written spec, then reviews the written
+  implementation plan and selects its execution method. Approval of the
+  recommendation only permits drafting the spec; written-spec approval
+  only permits invoking writing-plans.
 
-A reply approves the stage actually presented. Approval of an idea or
+A reply approves the phase actually presented. Approval of an idea or
 feature scope does not approve artifacts that do not exist yet. Resume
-at the earliest incomplete stage; do not turn one approval into permission
+at the earliest incomplete phase; do not turn one approval into permission
 to skip the rest of the selected path. Read-only project exploration is
 allowed while those prerequisites remain incomplete.
 </HARD-GATE>
@@ -72,16 +120,16 @@ override it:
   this repo: a new flag, a small endpoint, a one-file fix.
   Understanding the kind of app is not enough — bounded means the flow
   you are changing is already here to read. If there is no existing
-  flow to change, the task is not bounded. Ask the clarifying
-  questions that matter, present a short design IN CHAT (a few
-  sentences to a few short paragraphs), and STOP. Implementation
-  starts only after your human partner says yes to that design — a
-  bounded task's approval is as hard a gate as an architectural
-  one. No spec file, no implementation plan document.
+  flow to change, the task is not bounded. Ask your questions in
+  batches, present a short design IN CHAT (a few sentences to a few short
+  paragraphs) with your single recommended approach, and STOP.
+  Implementation starts only after your human partner says yes to that
+  design — a bounded task's approval is as hard a gate as an
+  architectural one. No spec file, no implementation plan document.
 - **Architectural** — new projects, new subsystems, changes that
   restructure how components fit together or alter interfaces others
-  depend on. Follow the full process: questions, approaches, sectioned
-  design, written spec, then the writing-plans skill.
+  depend on. Follow the full process: context scan, question batches,
+  single recommendation, drafted spec, review loop, then writing-plans.
 
 When in doubt between two paths, take the heavier one. The ratchet is
 one-way: hidden complexity discovered mid-task upgrades the path —
@@ -106,6 +154,9 @@ complete that path's reviews before implementation.
 | "The spike works, so I'll keep the code" | A spike's output is an answer. Keeping the code is a new request — classify it. |
 | "It grew, but I'm almost done — no need to re-classify" | Hidden complexity upgrades the path mid-task. Stop and say so. |
 | "They approved the spike, so the follow-up change is approved too" | Each task gets its own classification and its own approval. |
+| "I'll ask the second question after they answer the first" | Independent questions go in the same batch, each with a default. Only a question that depends on an answer waits. |
+| "I'll offer a couple of approaches so they can pick" | Pick the best one and recommend it. They can override it. |
+| "I'll scan the code myself, it's faster" | Scans go to a mid-tier subagent. Your context is for decisions. |
 
 ## Checklist
 
@@ -120,22 +171,23 @@ your path and complete them in order.
 5. **Report findings** — a recommendation; label anything built as throwaway
 
 **Bounded:**
-1. **Explore project context** — check files, docs, recent commits
-2. **Ask clarifying questions** — one at a time, the ones that matter
-3. **Present short design in chat** — approach, files touched, testing
+1. **Explore project context** — check files and docs
+2. **Ask clarifying questions in batches** — every independent question per batch, defaults included
+3. **Present short design in chat** — the single recommended approach, files touched, testing, commit policy
 4. **Get approval** — STOP and wait for an explicit yes; presenting the design and starting in the same breath is skipping the gate
 5. **Implement** — proceed with the normal development workflow (TDD applies); no plan document
 
 **Architectural:**
-1. **Explore project context** — check files, docs, recent commits
-2. **Offer the visual companion just-in-time** — NOT upfront. The first time a question would genuinely be clearer shown than described, offer it then (its own message); on approval its browser tab opens for you. If no visual question ever arises, never offer it. See the Visual Companion section below.
-3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-4. **Propose 2-3 approaches** — with trade-offs and your recommendation
-5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
-7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+1. **Set up the work directory** — `.superpowers/design/<stem>/`, where `<stem>` is `YYYY-MM-DD-<topic>`
+2. **Scan context** — dispatch a mid-tier subagent (`./context-scanner-prompt.md`); it writes `context.md`
+3. **Offer the visual companion just-in-time** — only if a question would genuinely be clearer shown than described. See the Visual Companion section below.
+4. **Ask questions in batches** — see "Question batches"
+5. **Present one recommendation + understanding** — produced on the frontier model; no alternatives listed. Get approval.
+6. **Save the brief** — the approved understanding, recommendation, and every answer, to `<work-dir>/brief.md`
+7. **Draft the spec** — mid-tier drafter (`./spec-drafter-prompt.md`) writes `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`
+8. **Run the review loop** — `./review-loop.md`, Spec phase, up to 5 rounds
+9. **User reviews the written spec** — ask them to review the file before proceeding
+10. **Hand off** — invoke writing-plans with only the spec path
 
 ## Process Flow
 
@@ -143,40 +195,41 @@ your path and complete them in order.
 digraph brainstorming {
     "Classify: spike / bounded / architectural" [shape=diamond];
     "Present question + probe (2-3 sentences)" [shape=box];
-    "Ask clarifying questions (bounded)" [shape=box];
+    "Ask questions in batches (bounded)" [shape=box];
     "Present short design in chat" [shape=box];
     "Human approves?" [shape=diamond];
     "Investigate; report recommendation" [shape=doublecircle];
     "Implement via normal workflow (no plan doc)" [shape=doublecircle];
-    "Explore project context" [shape=box];
-    "Ask clarifying questions" [shape=box];
-    "Propose 2-3 approaches" [shape=box];
-    "Present design sections" [shape=box];
-    "User approves design?" [shape=diamond];
-    "Write design doc" [shape=box];
-    "Spec self-review\n(fix inline)" [shape=box];
+    "Scan context (mid-tier subagent)" [shape=box];
+    "Ask questions in batches" [shape=box];
+    "Present one recommendation + understanding" [shape=box];
+    "User approves recommendation?" [shape=diamond];
+    "Draft spec (mid-tier drafter)" [shape=box];
+    "Review loop, max 5 rounds\n(frontier reviewer, fresh each round)" [shape=box];
+    "Critical/High open at round 5?" [shape=diamond];
     "User reviews spec?" [shape=diamond];
     "Invoke writing-plans skill" [shape=doublecircle];
     "Hidden complexity? Upgrade path" [shape=box];
 
     "Classify: spike / bounded / architectural" -> "Present question + probe (2-3 sentences)" [label="spike"];
-    "Classify: spike / bounded / architectural" -> "Ask clarifying questions (bounded)" [label="bounded"];
-    "Classify: spike / bounded / architectural" -> "Explore project context" [label="architectural"];
+    "Classify: spike / bounded / architectural" -> "Ask questions in batches (bounded)" [label="bounded"];
+    "Classify: spike / bounded / architectural" -> "Scan context (mid-tier subagent)" [label="architectural"];
     "Present question + probe (2-3 sentences)" -> "Human approves?";
-    "Ask clarifying questions (bounded)" -> "Present short design in chat";
+    "Ask questions in batches (bounded)" -> "Present short design in chat";
     "Present short design in chat" -> "Human approves?";
     "Human approves?" -> "Investigate; report recommendation" [label="spike: yes"];
     "Human approves?" -> "Implement via normal workflow (no plan doc)" [label="bounded: yes"];
     "Hidden complexity? Upgrade path" -> "Classify: spike / bounded / architectural";
-    "Explore project context" -> "Ask clarifying questions";
-    "Ask clarifying questions" -> "Propose 2-3 approaches";
-    "Propose 2-3 approaches" -> "Present design sections";
-    "Present design sections" -> "User approves design?";
-    "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write design doc" [label="yes"];
-    "Write design doc" -> "Spec self-review\n(fix inline)";
-    "Spec self-review\n(fix inline)" -> "User reviews spec?";
-    "User reviews spec?" -> "Write design doc" [label="changes requested"];
+    "Scan context (mid-tier subagent)" -> "Ask questions in batches";
+    "Ask questions in batches" -> "Present one recommendation + understanding";
+    "Present one recommendation + understanding" -> "User approves recommendation?";
+    "User approves recommendation?" -> "Present one recommendation + understanding" [label="no, revise"];
+    "User approves recommendation?" -> "Draft spec (mid-tier drafter)" [label="yes"];
+    "Draft spec (mid-tier drafter)" -> "Review loop, max 5 rounds\n(frontier reviewer, fresh each round)";
+    "Review loop, max 5 rounds\n(frontier reviewer, fresh each round)" -> "Critical/High open at round 5?";
+    "Critical/High open at round 5?" -> "User reviews spec?" [label="no"];
+    "Critical/High open at round 5?" -> "Draft spec (mid-tier drafter)" [label="yes: user decides, then resume"];
+    "User reviews spec?" -> "Draft spec (mid-tier drafter)" [label="changes requested"];
     "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
 }
 ```
@@ -191,35 +244,28 @@ reported recommendation.
 ## The Process
 
 The subsections below serve the bounded and architectural paths (a
-spike stops at "present the probe, get a nod"). Sections from
-**Exploring approaches** onward are architectural-path depth — for
-bounded work, context plus a few questions plus a short in-chat design
-is the whole process.
+spike stops at "present the probe, get a nod"). Bounded work needs
+context, question batches, and a short in-chat design. The rest is
+architectural depth.
 
 **Understanding the idea:**
 
-- Check out the current project state first (files, docs, recent commits)
-- Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
+- Check the project state first (files, docs). On the architectural path
+  this is the context scan, done by a mid-tier subagent so its file reads
+  stay out of your context. Read `context.md`, not the files.
+- Before asking questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't refine a project that needs to be decomposed first.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
-- For appropriately-scoped projects, ask questions one at a time to refine the idea
-- Prefer multiple choice questions when possible, but open-ended is fine too
-- Only one question per message - if a topic needs more exploration, break it into multiple questions
-- Focus on understanding: purpose, constraints, success criteria
+- Prefer multiple-choice questions with a default; open-ended is fine when there is no sensible default.
+- Focus on understanding: purpose, constraints, success criteria.
 
-**Exploring approaches:**
+**Recommending the approach:**
 
-- Propose 2-3 different approaches with trade-offs
-- Present options conversationally with your recommendation and reasoning
-- Lead with your recommended option and explain why
-- YAGNI ruthlessly - remove unnecessary features from every approach and design
-
-**Presenting the design:**
-
-- Once you believe you understand what you're building, present the design
-- Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
-- Ask after each section whether it looks right so far
-- Cover: architecture, components, data flow, error handling, testing
-- Be ready to go back and clarify if something doesn't make sense
+- Do the structural reasoning on the frontier model: yourself if you are
+  one, otherwise dispatch a frontier-model subagent with `context.md` and
+  the answers, and take back its recommendation.
+- Present exactly one approach: what it is, why it fits this codebase,
+  and what it deliberately leaves out. Do not list alternatives.
+- YAGNI ruthlessly — remove unnecessary features from the design.
 
 **Design for isolation and clarity:**
 
@@ -236,33 +282,32 @@ is the whole process.
 
 ## After the Design (architectural path)
 
-**Documentation:**
+**Drafting and review:**
 
-- Write the validated design (spec) to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`
+- Save the approved recommendation, understanding, and answers to
+  `<work-dir>/brief.md`, then dispatch the spec drafter
+  (`./spec-drafter-prompt.md`, mid-tier). It writes the spec to
+  `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`
   - (User preferences for spec location override this default)
-- Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
-
-**Spec Self-Review:**
-After writing the spec document, look at it with fresh eyes:
-
-1. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
-2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
-3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
-4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
-
-Fix any issues inline. No need to re-review — just fix and move on.
+- Run `./review-loop.md` for the Spec phase. The spec is finished, and
+  approved by your human partner, before any plan is drafted.
+- Do not run any git command on the spec: no commit, no staging.
 
 **User Review Gate:**
-After the spec review loop passes, ask the user to review the written spec before proceeding:
+When the loop exits clean, ask the user to review the written spec:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
+> "Spec written to `<path>` and review loop finished (`<open: line>`). Please review it and tell me what to change before we write the implementation plan. When everything is done, the final commit should include this spec and the plan — commit policy recorded as `<auto|ask>`; shall I keep that?"
 
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
+Wait for the response. If they request changes, resume the drafter with
+those changes and rerun the loop on the touched sections. Only proceed
+once they approve.
 
-**Implementation:**
+**Handoff to planning:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
+- Invoke the writing-plans skill and pass **only the spec path**. Do not
+  summarize the conversation, the ledger, or your reasoning; the plan
+  drafter starts with empty context and the approved spec is its whole
+  input.
 - Do NOT invoke any other skill. writing-plans is the next step.
 
 ## Visual Companion

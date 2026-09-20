@@ -45,6 +45,40 @@ Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md
 - Note Minor issues for later
 - Push back if reviewer is wrong (with reasoning)
 
+## Final Review via /code-review
+
+When the plan header has a `Final review` line (`model:` and `effort:`
+values your human partner chose while the plan was written), the final
+whole-branch review runs through the harness's `/code-review` command
+instead of the template above. Both execution skills call this section.
+
+1. **Dispatch one background subagent** on the model named in the line,
+   set explicitly. Run it in the background where the harness supports
+   that, and wait for its completion notice; do nothing else on the branch
+   meanwhile.
+2. **Its prompt** carries: the exact command to run,
+   `/code-review <effort> --fix "<contents of final-review-instructions.md>"`,
+   with the file's text inserted verbatim as the quoted argument; the
+   paths of the spec and the plan (the "original ask" the instructions
+   refer to); and the Commit policy. Invoke the command through the
+   harness's skill or command mechanism. If the subagent cannot invoke
+   it, it stops and replies BLOCKED. It does not substitute its own review.
+3. **Its reply** is capped at 15 lines: verdict line, findings fixed,
+   findings left open with severity, files changed, and the path of any
+   report file it wrote. Details stay in that file.
+4. **Commits.** `--fix` edits code. Under Commit policy `auto` the subagent
+   commits its fixes; under `ask` it leaves them uncommitted and lists the
+   files, and you ask your human partner before committing.
+5. **If BLOCKED**, tell your human partner, then fall back to the
+   dispatch in "How to Request" on the same model. Say so in the final
+   message.
+
+Effort and model come from your human partner's plan. Do not change them.
+
+The instructions text lives in
+[final-review-instructions.md](final-review-instructions.md); edit it
+there, not in the plan.
+
 ## Example
 
 ```
